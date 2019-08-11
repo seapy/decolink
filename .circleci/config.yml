@@ -1,0 +1,76 @@
+# Golang CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-go/ for more details
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.12.7
+    steps:
+      - checkout
+      - run: go get -u github.com/mitchellh/gox
+      - run:
+          name: compile
+          command: |
+            gox -os="linux darwin windows" -arch="amd64" -output="dist/decolink_{{.OS}}_{{.Arch}}"
+            cd dist/ && gzip -k *
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - dist
+            - template
+  alfred:
+    docker:
+      - image: cibuilds/github:0.12.2
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: "Create alfred workflow"
+          command: |
+            cp ./dist/decolink_darwin_amd64 ./template/alfred/
+            export VERSION=${CIRCLE_TAG}
+            eval "echo \"$(< ./template/alfred/info.plist)\"" > ./template/alfred/info.plist
+            zip -j ./dist/decolink.alfredworkflow ./template/alfred/*
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - dist
+  github-release:
+    docker:
+      - image: cibuilds/github:0.12.2
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            find dist -type f -not -name '*gz' -not -name '*alfredworkflow' -delete
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ./dist
+workflows:
+  version: 2
+  build-n-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+      - alfred:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+      - github-release:
+          requires:
+            - build
+            - alfred
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
