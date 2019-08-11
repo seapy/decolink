@@ -89,7 +89,7 @@
 	<key>createdby</key>
 	<string>seapy</string>
 	<key>description</key>
-	<string>Docoration link to markdown</string>
+	<string>Decoration link to markdown</string>
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
@@ -136,7 +136,7 @@
 				<key>keyword</key>
 				<string>decolink</string>
 				<key>subtext</key>
-				<string>Docoration link to markdown</string>
+				<string>Decoration link to markdown</string>
 				<key>text</key>
 				<string>decolink</string>
 				<key>withspace</key>
@@ -225,7 +225,7 @@
 		</dict>
 	</array>
 	<key>readme</key>
-	<string>Docoration link to markdown
+	<string>Decoration link to markdown
 
 - GitHub : https://github.com/seapy/decolink</string>
 	<key>uidata</key>

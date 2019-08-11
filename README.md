@@ -1,6 +1,6 @@
 # decolink
 
-Docoration link to markdown
+Decoration link to markdown
 
 ## Install
 
