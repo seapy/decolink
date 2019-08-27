@@ -23,3 +23,7 @@ $ decolink https://daringfireball.net/projects/markdown/
 
 [Daring Fireball: Markdown](https://daringfireball.net/projects/markdown/)
 ```
+
+## See also
+
+* [copy-url-for-alfred](https://github.com/fallroot/copy-url-for-alfred)
